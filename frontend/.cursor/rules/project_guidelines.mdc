@@ -1,0 +1,30 @@
+---
+description: Project Structure & Guidelines
+globs: frontend/*
+alwaysApply: true
+---
+## 🧱 Core Tech Stack
+
+- **Language**: TypeScript
+- **Framework**: Next.js (App Router preferred)
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn/ui (Radix UI-based)
+- **Forms**: react-hook-form + zod
+- **Maps**: mapbox-gl / react-map-gl
+- **Icons**: lucide-react
+- **Backendless**: Firebase (auth, storage)
+- **DOM to Image**: html2canvas
+
+---
+
+## 🗂️ File & Folder Layout
+
+src/
+├── app/ # Pages, layout, routing (Next.js App Router)
+├── components/ # Shared UI components
+│ ├── ui/ # Primitive components (button, input)
+│ └── forms/ # Form-related UI and logic
+├── hooks/ # Custom React hooks
+├── lib/ # Utilities, API clients, constants
+├── styles/ # Tailwind config / global styles
+└── types/ # TypeScript types and interfaces
