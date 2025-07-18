@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import _ from 'lodash';
 import { useDispatch } from 'react-redux';
-import { addStop } from '@/store/NewTripSlice';
+import { addStop, updateGeometry } from '@/store/NewTripSlice';
 import { Input } from '@/components/ui/input';
 
 interface Place {

@@ -10,9 +10,16 @@ import {
 } from '@/components/ui/card';
 import MapboxAutocomplete from '@/components/forms/TripForm/MapboxAutocomplete';
 import StopList from '@/components/forms/TripForm/StopList';
+import { Button } from '@/components/ui/button';
+import { useDispatch } from 'react-redux';
+import { clearList } from '@/store/NewTripSlice';
+import downloadMap from '@/components/forms/TripForm/downloadMap';
+
+
 export const TripForm: React.FC = () => {
+  const dispatch = useDispatch();
   return (
-    <Card className="h-full">
+    <Card className="h-full" id="newTripForm">
       <CardHeader>
         <CardTitle>Add stops</CardTitle>
       </CardHeader>
@@ -20,7 +27,12 @@ export const TripForm: React.FC = () => {
         <MapboxAutocomplete />
         <StopList />
       </CardContent>
-      <CardFooter className="flex gap-2"></CardFooter>
+      <CardFooter className="flex gap-2 justify-end">
+        <Button variant="secondary" onClick={() => {
+          dispatch(clearList());
+        }}>Clear</Button>
+        <Button onClick={downloadMap}>Download</Button>
+      </CardFooter>
     </Card>
   );
 };

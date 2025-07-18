@@ -3,17 +3,17 @@ import mockData from '@/mockData.json';
 
 export interface NewTripState<T = any> {
   stops: T[];
-  route: any;
+  geometry: any;
 }
 
 const initialState: NewTripState = {
   stops: mockData.stops,
-  route: mockData.route,
+  geometry: mockData.geometry,
 };
 
 // const initialState: NewTripState = {
 //   stops: [],
-//   route: null,
+//   geometry: null,
 // };
 
 export const NewTripSlice = createSlice({
@@ -21,7 +21,7 @@ export const NewTripSlice = createSlice({
   initialState,
   reducers: {
     addStop: (state, action: PayloadAction<any>) => {
-      state.stops.push(action.payload);
+      state.stops = [...state.stops, action.payload]
     },
     removeStop: (
       state,
@@ -29,12 +29,19 @@ export const NewTripSlice = createSlice({
     ) => {
       state.stops = state.stops.filter(stop => stop.id !== action.payload);
     },
+    reorderStops: (state, action: PayloadAction<any>) => {
+      state.stops = action.payload;
+    },
+    updateGeometry: (state, action: PayloadAction<any>) => {
+      state.geometry = action.payload;
+    },
     clearList: state => {
       state.stops = [];
+      state.geometry = null;
     },
   },
 });
 
-export const { addStop, removeStop, clearList } = NewTripSlice.actions;
+export const { addStop, removeStop, reorderStops, updateGeometry, clearList } = NewTripSlice.actions;
 
 export default NewTripSlice.reducer;

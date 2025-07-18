@@ -121,3 +121,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+.mapboxgl-ctrl-logo {
+  display: none !important;
+}

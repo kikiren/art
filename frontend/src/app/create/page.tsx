@@ -32,11 +32,19 @@ const CreateTripPage = () => {
       </div>
 
       <div className="flex flex-1">
-        <div className="w-1/3">
+        <div className="w-1/3 flex-1">
           <TripForm />
         </div>
-        <div className="w-2/3">
-          <MapBoxMap />
+        <div className="w-2/3 p-10">
+          <div className="w-full h-full flex flex-col gap-10 p-10" id="newTripPreview" style={{ border: '20px solid black' }}>
+            <MapBoxMap />
+            <div className="flex-1 text-center">
+              <h6>My Trip</h6>
+              <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
