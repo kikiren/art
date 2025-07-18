@@ -5,70 +5,75 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 
 export default function MapBoxMap() {
-  const stops = useSelector((state: RootState) => state.stopList.list);
-  const [routeGeoJSON, setRouteGeoJSON] = React.useState<any>(null);
-  const mapRef = React.useRef<any>(null);
+
+  const route = useSelector((state: RootState) => state.newTrip.route);
+  const stops = useSelector((state: RootState) => state.newTrip.stops);
+  const [geometry, setGeometry] = React.useState<any>(null);
+  // const mapRef = React.useRef<any>(null);
 
   React.useEffect(() => {
     if (stops.length < 2) return;
     (async () => {
       const coords = stops.map(stop => stop.coordinates);
 
-      const res = await fetch('/api/route', {
-        method: 'POST',
-        body: JSON.stringify(coords),
-      });
-      const data = await res.json();
-
-      if (!data || !data.routes) {
-        throw new Error('Invalid response from Mapbox Directions API');
+      if (!route) {
+        const res = await fetch('/api/route', {
+          method: 'POST',
+          body: JSON.stringify(coords),
+        });
+        const data = await res.json();
+        console.log(data);
+        if (!data || !data.routes) {
+          throw new Error('Invalid response from Mapbox Directions API');
+        }
+        setGeometry(data.routes[0].geometry);
+      } else {
+        console.log(route);
+        setGeometry(route.geometry);
       }
 
-      setRouteGeoJSON({
-        type: 'Feature',
-        geometry: data.routes[0].geometry,
-      });
+
     })();
   }, [stops]);
 
-  // 自动缩放到路线
-  React.useEffect(() => {
-    if (!routeGeoJSON) return;
-
-    const coordinates = routeGeoJSON.geometry.coordinates;
-
-    if (coordinates.length > 0) {
-      // 计算 bounds
-      let minLng = coordinates[0][0],
-        minLat = coordinates[0][1];
-      let maxLng = coordinates[0][0],
-        maxLat = coordinates[0][1];
+  const handleMapRef = (node: any) => {
+    if (node === null || !geometry) return;
+    if (geometry.coordinates && geometry.coordinates.length > 0) {
+      const coordinates = geometry.coordinates;
+      let minLng = coordinates[0][0], minLat = coordinates[0][1];
+      let maxLng = coordinates[0][0], maxLat = coordinates[0][1];
       coordinates.forEach(([lng, lat]: [number, number]) => {
         minLng = Math.min(minLng, lng);
         minLat = Math.min(minLat, lat);
         maxLng = Math.max(maxLng, lng);
         maxLat = Math.max(maxLat, lat);
       });
-      mapRef.current.fitBounds(
-        [
-          [minLng, minLat],
-          [maxLng, maxLat],
-        ],
-        { padding: 40, duration: 1000 }
-      );
+      // 若地图尚未加载，等待地图onLoad事件
+      if (node && typeof node.fitBounds === 'function') {
+        node.fitBounds(
+          [
+            [minLng, minLat],
+            [maxLng, maxLat],
+          ],
+          { padding: 40, duration: 1000 }
+        );
+      }
     }
-  }, [routeGeoJSON]);
+  };
 
   return (
     <Map
-      ref={mapRef}
+      ref={handleMapRef}
       reuseMaps
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
       style={{ width: '100%', height: '100%' }}
       mapStyle="mapbox://styles/mapbox/light-v11"
     >
-      {routeGeoJSON && (
-        <Source id="route" type="geojson" data={routeGeoJSON}>
+      {geometry && (
+        <Source id="route" type="geojson" data={{
+          type: 'Feature',
+          geometry,
+        }}>
           <Layer
             id="route-line"
             type="line"

@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import stopListReducer from './stopListSlice';
+import newTripReducer from './NewTripSlice';
 
 export const store = configureStore({
   reducer: {
-    stopList: stopListReducer,
+    newTrip: newTripReducer,
   },
 });
 

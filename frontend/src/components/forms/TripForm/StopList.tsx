@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
-import { removeStop } from '@/store/stopListSlice';
+import { removeStop } from '@/store/NewTripSlice';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 
 const StopList = () => {
     const dispatch = useDispatch();
-    const stops = useSelector((state: RootState) => state.stopList.list);
+    const stops = useSelector((state: RootState) => state.newTrip.stops);
     return (
         <ScrollArea
             className="h-full w-full rounded-md border"
