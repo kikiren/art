@@ -13,9 +13,9 @@ const downloadMap = () => {
         useCORS: true,
         backgroundColor: '#ffffff',
         logging: true,
-        scale: 2,
+        scale: 3,
     }).then((canvas) => {
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+        const dataUrl = canvas.toDataURL('image/jpeg', 1);
         const link = document.createElement('a');
         link.href = dataUrl;
         link.download = 'map.jpg';
