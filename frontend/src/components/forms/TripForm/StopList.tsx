@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import { Button } from '@/components/ui/button';
@@ -63,7 +63,6 @@ const SortableStopItem: React.FC<SortableStopItemProps> = ({ stop, handleRemove,
                 <Button
                     variant="ghost"
                     aria-label="Drag to reorder"
-                    tabIndex={0}
                     {...attributes}
                     {...listeners}
                 >
@@ -90,6 +89,7 @@ const SortableStopItem: React.FC<SortableStopItemProps> = ({ stop, handleRemove,
 const StopList: React.FC = () => {
     const dispatch = useDispatch();
     const stops = useSelector((state: RootState) => state.newTrip.stops) as Stop[];
+    const scrollAreaRef = useRef<HTMLDivElement>(null);
 
     const sensors = useSensors(useSensor(PointerSensor));
 
@@ -110,8 +110,37 @@ const StopList: React.FC = () => {
         dispatch(reorderStops(newStops));
     };
 
+    // 滚动到底部的函数
+    const scrollToBottom = () => {
+        if (scrollAreaRef.current) {
+            const scrollElement = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+            if (scrollElement) {
+                scrollElement.scrollTo({
+                    top: scrollElement.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }
+        }
+    };
+
+    // 暴露给外部调用的滚动函数（可选）
+    const handleScrollToBottom = () => {
+        scrollToBottom();
+    };
+
+    // 当stops数量增加时自动滚动到底部
+    useEffect(() => {
+        if (stops.length > 0) {
+            // 使用setTimeout确保DOM更新完成后再滚动
+            setTimeout(() => {
+                scrollToBottom();
+            }, 100);
+        }
+    }, [stops.length]);
+
     return (
         <ScrollArea
+            ref={scrollAreaRef}
             className="w-full rounded-md border h-full max-h-[400px]"
             aria-label="List of stops"
         >

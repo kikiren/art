@@ -50,24 +50,13 @@ const CreateTripPage = () => {
       id="create-trip"
       className="w-[100vw] h-[100vh] bg-gray-50 flex flex-col"
     >
-      {/* Hero Section */}
-      <div className="bg-white border-b border-gray-200 bg-red-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Create New Trip
-            </h1>
-          </div>
-        </div>
-      </div>
-
       <div className="flex flex-1">
         <div className="min-w-1/4">
           <TripForm />
         </div>
         <div className="p-10 flex-1 flex items-center justify-center relative">
           <div
-            className="box-border p-6 aspect-[4/3] w-full max-w-[800px] flex items-center justify-center bg-black layered-shadow"
+            className="box-border p-6 aspect-[4/3] w-full max-w-[960px] flex items-center justify-center bg-black layered-shadow"
             aria-label="Preview area with black frame"
             tabIndex={0}
             role="region"
