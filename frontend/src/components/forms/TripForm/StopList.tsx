@@ -30,10 +30,11 @@ type Stop = {
 
 type SortableStopItemProps = {
     stop: Stop;
-    handleRemove: (id: string) => void;
+    handleRemove: (idx: number) => void;
+    index: number;
 };
 
-const SortableStopItem: React.FC<SortableStopItemProps> = ({ stop, handleRemove }) => {
+const SortableStopItem: React.FC<SortableStopItemProps> = ({ stop, handleRemove, index }) => {
     const {
         attributes,
         listeners,
@@ -76,7 +77,7 @@ const SortableStopItem: React.FC<SortableStopItemProps> = ({ stop, handleRemove 
                     variant="ghost"
                     aria-label="Remove stop"
                     tabIndex={0}
-                    onClick={() => handleRemove(stop.id)}
+                    onClick={() => handleRemove(index)}
                 >
                     <X />
                 </Button>
@@ -92,8 +93,8 @@ const StopList: React.FC = () => {
 
     const sensors = useSensors(useSensor(PointerSensor));
 
-    const handleRemove = (id: string) => {
-        dispatch(removeStop(id));
+    const handleRemove = (idx: number) => {
+        dispatch(removeStop(idx));
     };
 
     const handleDragEnd = (event: DragEndEvent) => {
@@ -111,7 +112,7 @@ const StopList: React.FC = () => {
 
     return (
         <ScrollArea
-            className="h-full w-full rounded-md border"
+            className="w-full rounded-md border h-full max-h-[400px]"
             aria-label="List of stops"
         >
             {stops.length === 0 ? (
@@ -123,8 +124,8 @@ const StopList: React.FC = () => {
                     onDragEnd={handleDragEnd}
                 >
                     <SortableContext items={stops.map((stop) => stop.id)} strategy={verticalListSortingStrategy}>
-                        {stops.map((stop) => (
-                            <SortableStopItem key={stop.id} stop={stop} handleRemove={handleRemove} />
+                        {stops.map((stop, index) => (
+                            <SortableStopItem key={`${stop.id}-${index}`} stop={stop} handleRemove={handleRemove} index={index} />
                         ))}
                     </SortableContext>
                 </DndContext>

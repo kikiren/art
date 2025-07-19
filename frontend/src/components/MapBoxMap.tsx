@@ -87,22 +87,22 @@ export default function MapBoxMap() {
             type="line"
             paint={{
               'line-color': 'black',
-              'line-width': 5,
+              'line-width': 3,
             }}
           />
         </Source>
       )}
       {stops &&
-        stops.map((stop) => {
+        stops.map((stop, index) => {
           return (
-            <div key={stop.id} className="relative">
+            <div key={`${stop.id}-${index}`} className="relative">
               <Marker
                 longitude={stop.coordinates[0]}
                 latitude={stop.coordinates[1]}
-                anchor="bottom"
+                anchor="center"
               >
                 <div
-                  className="rounded-full bg-black w-3 h-3"
+                  className={`rounded-full w-2 h-2 border-2 border-black ${index === 0 || index === stops.length - 1 ? 'bg-black' : 'bg-white'}`}
                   tabIndex={0}
                   aria-label={stop.name}
                   role="button"
@@ -113,8 +113,24 @@ export default function MapBoxMap() {
                     }
                   }}
                 />
+              </Marker>
+              <Marker
+                longitude={stop.coordinates[0]}
+                latitude={stop.coordinates[1]}
+                anchor="center"
+                offset={[0, -10]}
+                draggable={true}
+              >
                 <div
-                  className="absolute top-[10px] left-[10px] no-select max-w-24 overflow-hidden text-ellipsis whitespace-nowrap font-bold text-black drop-shadow-[0_1px_0_white,0_-1px_0_white,1px_0_0_white,-1px_0_0_white]"
+                  className="absolute top-[10px] no-select max-w-36 overflow-hidden text-ellipsis whitespace-nowrap font-bold text-black"
+                  style={{
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    textShadow: '0 1px 0 white, 0 -1px 0 white, 1px 0 0 white, -1px 0 0 white',
+                  }}
+                  tabIndex={0}
+                  aria-label={stop.name}
+                  role="button"
                 >
                   {stop.name}
                 </div>

@@ -26,7 +26,7 @@ export const TripForm: React.FC = () => {
       <CardHeader>
         <CardTitle>Add stops</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-2 h-full">
+      <CardContent className="flex flex-col gap-3 h-full">
         <Input
           placeholder="Title"
           ref={titleRef}

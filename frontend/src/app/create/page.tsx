@@ -66,12 +66,17 @@ const CreateTripPage = () => {
           <TripForm />
         </div>
         <div className="p-10 flex-1 flex items-center justify-center relative">
-          <div className="bg-black box-border p-5 aspect-[4/3] w-full max-w-[800px] flex items-center justify-center relative">
+          <div
+            className="box-border p-6 aspect-[4/3] w-full max-w-[800px] flex items-center justify-center bg-black layered-shadow"
+            aria-label="Preview area with black frame"
+            tabIndex={0}
+            role="region"
+          >
             <PreviewContainer />
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

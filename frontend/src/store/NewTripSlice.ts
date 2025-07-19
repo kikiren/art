@@ -30,12 +30,19 @@ export const NewTripSlice = createSlice({
     },
     removeStop: (
       state,
-      action: PayloadAction<(stop_id: string) => boolean>
+      action: PayloadAction<number>
     ) => {
-      state.stops = state.stops.filter(stop => stop.id !== action.payload);
+      state.stops = state.stops.filter((_, idx) => idx !== action.payload);
     },
     reorderStops: (state, action: PayloadAction<any>) => {
       state.stops = action.payload;
+    },
+    updateStopNamePosition: (state, action: PayloadAction<{ id: string; namePosition: [number, number] }>) => {
+      const { id, namePosition } = action.payload;
+      const stopIndex = state.stops.findIndex(stop => stop.id === id);
+      if (stopIndex !== -1) {
+        state.stops[stopIndex].namePosition = namePosition;
+      }
     },
     updateGeometry: (state, action: PayloadAction<any>) => {
       state.geometry = action.payload;
@@ -46,6 +53,6 @@ export const NewTripSlice = createSlice({
   },
 });
 
-export const { addStop, removeStop, reorderStops, updateGeometry, clearList, updateTitle, updateDescription } = NewTripSlice.actions;
+export const { addStop, removeStop, reorderStops, updateStopNamePosition, updateGeometry, clearList, updateTitle, updateDescription } = NewTripSlice.actions;
 
 export default NewTripSlice.reducer;
