@@ -4,6 +4,8 @@ import { useEffect, useRef } from 'react';
 import TripForm from '@/components/forms/TripForm';
 import MapBoxMap from '@/components/MapBoxMap';
 import { Montserrat } from 'next/font/google';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -12,6 +14,8 @@ const montserrat = Montserrat({
 
 
 const PreviewContainer = () => {
+  const title = useSelector((state: RootState) => state.newTrip.title);
+  const description = useSelector((state: RootState) => state.newTrip.description);
   return (
     <div
       id="newTripPreview"
@@ -21,9 +25,9 @@ const PreviewContainer = () => {
         <MapBoxMap />
       </div>
       <div className="text-center flex flex-col gap-1">
-        <h6 className={`text-3xl font-bold ${montserrat.className} font-bold`}>My Trip</h6>
+        <h6 className={`text-3xl font-bold ${montserrat.className} font-bold`}>{title}</h6>
         <p className="text-xs font-light">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+          {description}
         </p>
       </div>
     </div>
@@ -31,6 +35,7 @@ const PreviewContainer = () => {
 };
 
 const CreateTripPage = () => {
+
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

@@ -30,7 +30,6 @@ export default function MapBoxMap() {
   const handleMapRef = (node: any) => {
 
     if (!node || typeof node.fitBounds !== 'function') return;
-    if (!geometry || !geometry.coordinates || !geometry.coordinates.length) return;
 
     // remove all labels from the map
     node.on('load', () => {
@@ -41,6 +40,9 @@ export default function MapBoxMap() {
         }
       });
     });
+
+    if (!geometry || !geometry.coordinates || !geometry.coordinates.length) return;
+
 
     const coordinates = geometry.coordinates;
     let minLng = coordinates[0][0], minLat = coordinates[0][1];
@@ -59,8 +61,6 @@ export default function MapBoxMap() {
       { padding: 40, duration: 1000 }
     );
   };
-
-  if (!geometry) return <div>Add 2 stops to see the map</div>;
 
   return (
     <Map

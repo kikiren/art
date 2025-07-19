@@ -2,24 +2,29 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import mockData from '@/mockData.json';
 
 export interface NewTripState<T = any> {
+  title: string;
+  description: string;
   stops: T[];
   geometry: any;
 }
 
 const initialState: NewTripState = {
-  stops: mockData.stops,
-  geometry: mockData.geometry,
+  title: 'Map Title',
+  description: 'Some description',
+  stops: [],
+  geometry: null,
 };
-
-// const initialState: NewTripState = {
-//   stops: [],
-//   geometry: null,
-// };
 
 export const NewTripSlice = createSlice({
   name: 'newTrip',
   initialState,
   reducers: {
+    updateTitle: (state, action: PayloadAction<string>) => {
+      state.title = action.payload;
+    },
+    updateDescription: (state, action: PayloadAction<string>) => {
+      state.description = action.payload;
+    },
     addStop: (state, action: PayloadAction<any>) => {
       state.stops = [...state.stops, action.payload]
     },
@@ -36,12 +41,11 @@ export const NewTripSlice = createSlice({
       state.geometry = action.payload;
     },
     clearList: state => {
-      state.stops = [];
-      state.geometry = null;
+      Object.assign(state, initialState);
     },
   },
 });
 
-export const { addStop, removeStop, reorderStops, updateGeometry, clearList } = NewTripSlice.actions;
+export const { addStop, removeStop, reorderStops, updateGeometry, clearList, updateTitle, updateDescription } = NewTripSlice.actions;
 
 export default NewTripSlice.reducer;
