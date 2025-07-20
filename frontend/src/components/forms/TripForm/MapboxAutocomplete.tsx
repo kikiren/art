@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import _ from 'lodash';
-import { useDispatch, us, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addTempStop } from '@/store/NewTripSlice';
 import { Input } from '@/components/ui/input';
 import { RootState } from '@/store';
