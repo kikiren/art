@@ -3,10 +3,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import _ from 'lodash';
 import { useDispatch } from 'react-redux';
-import { addStop, updateGeometry } from '@/store/NewTripSlice';
+import { addStop } from '@/store/NewTripSlice';
 import { Input } from '@/components/ui/input';
 
 interface Place {
+  properties: any;
   id: string;
   place_name: string;
   center: [number, number];
@@ -77,11 +78,15 @@ export default function MapboxAutocomplete() {
       coordinates: _.get(place, 'geometry.coordinates'),
     };
     dispatch(addStop(newPlace));
-    inputRef.current.value = '';
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!isOpen || suggestions.length === 0) return;
+    if (!isOpen || suggestions.length === 0) {
+      return;
+    }
 
     switch (e.key) {
       case 'ArrowDown':

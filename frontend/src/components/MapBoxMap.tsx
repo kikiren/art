@@ -1,15 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import Map, { Source, Layer, Marker } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store';
-import { updateGeometry } from '@/store/NewTripSlice';
+import { updateGeometry, resetStopOrderChanged } from '@/store/NewTripSlice';
 
 
 export default function MapBoxMap() {
 
   const geometry = useSelector((state: RootState) => state.newTrip.geometry);
   const stops = useSelector((state: RootState) => state.newTrip.stops);
+  const stopOrderChanged = useSelector((state: RootState) => state.newTrip.stopOrderChanged);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -27,10 +28,9 @@ export default function MapBoxMap() {
     })()
   }, [stops]);
 
-  const handleMapRef = (node: any) => {
+  const handleMapRef = useCallback((node: any) => {
 
     if (!node || typeof node.fitBounds !== 'function') return;
-    if (!geometry || !geometry.coordinates || !geometry.coordinates.length) return;
 
     // remove all labels from the map
     node.on('load', () => {
@@ -42,7 +42,20 @@ export default function MapBoxMap() {
       });
     });
 
-    const coordinates = geometry.coordinates;
+    // if (!geometry || !geometry.coordinates || !geometry.coordinates.length) return;
+    if (!stops || !stops.length) return;
+
+    if (stopOrderChanged) {
+      dispatch(resetStopOrderChanged());
+      return
+    }
+    if (stops.length === 1) {
+      const [lng, lat] = stops[0].coordinates;
+      node.setCenter([lng, lat]);
+      node.setZoom(3.2);
+      return;
+    }
+    const coordinates = stops.map(stop => stop.coordinates);
     let minLng = coordinates[0][0], minLat = coordinates[0][1];
     let maxLng = coordinates[0][0], maxLat = coordinates[0][1];
     coordinates.forEach(([lng, lat]: [number, number]) => {
@@ -58,9 +71,7 @@ export default function MapBoxMap() {
       ],
       { padding: 40, duration: 1000 }
     );
-  };
-
-  if (!geometry) return <div>Add 2 stops to see the map</div>;
+  }, [stops]);
 
   return (
     <Map
@@ -71,6 +82,11 @@ export default function MapBoxMap() {
       preserveDrawingBuffer={true}
       attributionControl={false}
       projection="mercator"
+      initialViewState={{
+        latitude: 39.8283, // Center of the contiguous US, which doesn't make sense cause the users are from all over the world
+        longitude: -98.5795,
+        zoom: 3.2,
+      }}
     >
       {geometry && (
         <Source
@@ -87,22 +103,22 @@ export default function MapBoxMap() {
             type="line"
             paint={{
               'line-color': 'black',
-              'line-width': 5,
+              'line-width': 3,
             }}
           />
         </Source>
       )}
       {stops &&
-        stops.map((stop) => {
+        stops.map((stop, index) => {
           return (
-            <div key={stop.id} className="relative">
+            <div key={`${stop.id}-${index}`} className="relative">
               <Marker
                 longitude={stop.coordinates[0]}
                 latitude={stop.coordinates[1]}
-                anchor="bottom"
+                anchor="center"
               >
                 <div
-                  className="rounded-full bg-black w-3 h-3"
+                  className={`rounded-full w-2 h-2 border-2 border-black ${index === 0 || index === stops.length - 1 ? 'bg-black' : 'bg-white'}`}
                   tabIndex={0}
                   aria-label={stop.name}
                   role="button"
@@ -113,8 +129,24 @@ export default function MapBoxMap() {
                     }
                   }}
                 />
+              </Marker>
+              <Marker
+                longitude={stop.coordinates[0]}
+                latitude={stop.coordinates[1]}
+                anchor="center"
+                offset={[0, -10]}
+                draggable={true}
+              >
                 <div
-                  className="absolute top-[10px] left-[10px] no-select max-w-24 overflow-hidden text-ellipsis whitespace-nowrap font-bold text-black drop-shadow-[0_1px_0_white,0_-1px_0_white,1px_0_0_white,-1px_0_0_white]"
+                  className="absolute top-[10px] no-select max-w-36 overflow-hidden text-ellipsis whitespace-nowrap font-bold text-black"
+                  style={{
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    textShadow: '0 1px 0 white, 0 -1px 0 white, 1px 0 0 white, -1px 0 0 white',
+                  }}
+                  tabIndex={0}
+                  aria-label={stop.name}
+                  role="button"
                 >
                   {stop.name}
                 </div>
