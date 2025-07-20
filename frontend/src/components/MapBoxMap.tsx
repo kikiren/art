@@ -11,6 +11,7 @@ export default function MapBoxMap() {
   const geometry = useSelector((state: RootState) => state.newTrip.geometry);
   const stops = useSelector((state: RootState) => state.newTrip.stops);
   const stopOrderChanged = useSelector((state: RootState) => state.newTrip.stopOrderChanged);
+  const tempStop = useSelector((state: RootState) => state.newTrip.tempStop);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -42,20 +43,24 @@ export default function MapBoxMap() {
       });
     });
 
-    // if (!geometry || !geometry.coordinates || !geometry.coordinates.length) return;
-    if (!stops || !stops.length) return;
+    const allStops = [...stops, ...(tempStop ? [tempStop] : [])]
+
+    if (!allStops || !allStops.length) return;
 
     if (stopOrderChanged) {
       dispatch(resetStopOrderChanged());
       return
     }
-    if (stops.length === 1) {
-      const [lng, lat] = stops[0].coordinates;
+
+
+
+    if (allStops.length === 1) {
+      const [lng, lat] = allStops[0].coordinates;
       node.setCenter([lng, lat]);
       node.setZoom(3.2);
       return;
     }
-    const coordinates = stops.map(stop => stop.coordinates);
+    const coordinates = allStops.map(stop => stop.coordinates);
     let minLng = coordinates[0][0], minLat = coordinates[0][1];
     let maxLng = coordinates[0][0], maxLat = coordinates[0][1];
     coordinates.forEach(([lng, lat]: [number, number]) => {
@@ -71,7 +76,7 @@ export default function MapBoxMap() {
       ],
       { padding: 40, duration: 1000 }
     );
-  }, [stops]);
+  }, [stops, tempStop]);
 
   return (
     <Map
@@ -108,8 +113,22 @@ export default function MapBoxMap() {
           />
         </Source>
       )}
+      {tempStop && (<Marker
+        longitude={tempStop.coordinates[0]}
+        latitude={tempStop.coordinates[1]}
+        anchor="center"
+      >
+        <div
+          className="rounded-full w-2 h-2 border-2 border-black bg-white"
+          tabIndex={0}
+          aria-label={tempStop.name}
+          role="button"
+        />
+        {tempStop.name}
+      </Marker>)}
       {stops &&
         stops.map((stop, index) => {
+          if (!stop.displayOnMap) return null;
           return (
             <div key={`${stop.id}-${index}`} className="relative">
               <Marker
