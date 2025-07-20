@@ -1,15 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import Map, { Source, Layer, Marker } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store';
-import { updateGeometry } from '@/store/NewTripSlice';
+import { updateGeometry, resetStopOrderChanged } from '@/store/NewTripSlice';
 
 
 export default function MapBoxMap() {
 
   const geometry = useSelector((state: RootState) => state.newTrip.geometry);
   const stops = useSelector((state: RootState) => state.newTrip.stops);
+  const stopOrderChanged = useSelector((state: RootState) => state.newTrip.stopOrderChanged);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -27,7 +28,7 @@ export default function MapBoxMap() {
     })()
   }, [stops]);
 
-  const handleMapRef = (node: any) => {
+  const handleMapRef = useCallback((node: any) => {
 
     if (!node || typeof node.fitBounds !== 'function') return;
 
@@ -41,10 +42,20 @@ export default function MapBoxMap() {
       });
     });
 
-    if (!geometry || !geometry.coordinates || !geometry.coordinates.length) return;
+    // if (!geometry || !geometry.coordinates || !geometry.coordinates.length) return;
+    if (!stops || !stops.length) return;
 
-
-    const coordinates = geometry.coordinates;
+    if (stopOrderChanged) {
+      dispatch(resetStopOrderChanged());
+      return
+    }
+    if (stops.length === 1) {
+      const [lng, lat] = stops[0].coordinates;
+      node.setCenter([lng, lat]);
+      node.setZoom(3.2);
+      return;
+    }
+    const coordinates = stops.map(stop => stop.coordinates);
     let minLng = coordinates[0][0], minLat = coordinates[0][1];
     let maxLng = coordinates[0][0], maxLat = coordinates[0][1];
     coordinates.forEach(([lng, lat]: [number, number]) => {
@@ -60,7 +71,7 @@ export default function MapBoxMap() {
       ],
       { padding: 40, duration: 1000 }
     );
-  };
+  }, [stops]);
 
   return (
     <Map
@@ -71,6 +82,11 @@ export default function MapBoxMap() {
       preserveDrawingBuffer={true}
       attributionControl={false}
       projection="mercator"
+      initialViewState={{
+        latitude: 39.8283, // Center of the contiguous US, which doesn't make sense cause the users are from all over the world
+        longitude: -98.5795,
+        zoom: 3.2,
+      }}
     >
       {geometry && (
         <Source

@@ -6,6 +6,7 @@ export interface NewTripState<T = any> {
   description: string;
   stops: T[];
   geometry: any;
+  stopOrderChanged: boolean;
 }
 
 const initialState: NewTripState = {
@@ -13,6 +14,7 @@ const initialState: NewTripState = {
   description: 'Some description',
   stops: [],
   geometry: null,
+  stopOrderChanged: false,
 };
 
 export const NewTripSlice = createSlice({
@@ -36,6 +38,10 @@ export const NewTripSlice = createSlice({
     },
     reorderStops: (state, action: PayloadAction<any>) => {
       state.stops = action.payload;
+      state.stopOrderChanged = true;
+    },
+    resetStopOrderChanged: (state) => {
+      state.stopOrderChanged = false;
     },
     updateStopNamePosition: (state, action: PayloadAction<{ id: string; namePosition: [number, number] }>) => {
       const { id, namePosition } = action.payload;
@@ -53,6 +59,6 @@ export const NewTripSlice = createSlice({
   },
 });
 
-export const { addStop, removeStop, reorderStops, updateStopNamePosition, updateGeometry, clearList, updateTitle, updateDescription } = NewTripSlice.actions;
+export const { addStop, removeStop, reorderStops, updateStopNamePosition, updateGeometry, clearList, updateTitle, updateDescription, resetStopOrderChanged } = NewTripSlice.actions;
 
 export default NewTripSlice.reducer;
