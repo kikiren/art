@@ -1,11 +1,14 @@
 import React, { useRef, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/store';
+
 import { Button } from '@/components/ui/button';
-import { X, GripVertical } from 'lucide-react';
-import { removeStop, reorderStops } from '@/store/NewTripSlice';
+import { X, GripVertical, Pencil } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/store';
+import { removeStop, reorderStops, addTempStop } from '@/store/NewTripSlice';
+
 import {
     DndContext,
     closestCenter,
@@ -35,6 +38,7 @@ type SortableStopItemProps = {
 };
 
 const SortableStopItem: React.FC<SortableStopItemProps> = ({ stop, handleRemove, index }) => {
+    const dispatch = useDispatch();
     const {
         attributes,
         listeners,
@@ -59,7 +63,7 @@ const SortableStopItem: React.FC<SortableStopItemProps> = ({ stop, handleRemove,
             tabIndex={0}
             aria-label={`${stop.name || 'Unnamed Stop'}`}
         >
-            <div className="py-2 px-4 flex items-center justify-between gap-2">
+            <div className="p-2 flex items-center justify-between gap-1">
                 <Button
                     variant="ghost"
                     aria-label="Drag to reorder"
@@ -72,10 +76,16 @@ const SortableStopItem: React.FC<SortableStopItemProps> = ({ stop, handleRemove,
                     <div className="font-medium truncate">{stop.name || 'Unnamed Stop'}</div>
                     <div className="text-xs text-gray-500 truncate">{stop.address || ''}</div>
                 </div>
+                <Button variant="ghost" aria-label="Edit stop" tabIndex={0} onClick={() => {
+                    dispatch(removeStop(index));
+                    dispatch(addTempStop(stop));
+                }}>
+                    <Pencil />
+                </Button>
                 <Button
                     variant="ghost"
                     aria-label="Remove stop"
-                    tabIndex={0}
+                    tabIndex={1}
                     onClick={() => handleRemove(index)}
                 >
                     <X />

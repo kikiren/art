@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import _ from 'lodash';
-import { useDispatch } from 'react-redux';
-import { addStop } from '@/store/NewTripSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addTempStop } from '@/store/NewTripSlice';
 import { Input } from '@/components/ui/input';
+import { RootState } from '@/store';
 
 interface Place {
   properties: any;
@@ -16,6 +17,7 @@ interface Place {
 
 export default function MapboxAutocomplete() {
   const dispatch = useDispatch();
+  const tempStop = useSelector((state: RootState) => state.newTrip.tempStop);
   const [suggestions, setSuggestions] = useState<Place[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -76,8 +78,9 @@ export default function MapboxAutocomplete() {
       name: _.get(place, 'properties.name_preferred'),
       address: _.get(place, 'properties.full_address'),
       coordinates: _.get(place, 'geometry.coordinates'),
+      displayOnMap: true,
     };
-    dispatch(addStop(newPlace));
+    dispatch(addTempStop(newPlace));
     if (inputRef.current) {
       inputRef.current.value = '';
     }
@@ -138,6 +141,10 @@ export default function MapboxAutocomplete() {
     }
   };
 
+  if (tempStop) {
+    return null;
+  }
+
   return (
     <div className="relative">
       <Input
@@ -147,7 +154,7 @@ export default function MapboxAutocomplete() {
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         onFocus={handleFocus}
-        className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+        className={`focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
       />
       {isLoading && (
         <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
