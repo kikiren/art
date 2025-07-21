@@ -1,5 +1,6 @@
 'use client';
 
+import ProtectedRoute from '@/components/ProtectedRoute';
 import { useEffect, useRef } from 'react';
 import TripForm from '@/components/forms/TripForm';
 import MapBoxMap from '@/components/MapBoxMap';
@@ -45,27 +46,29 @@ const CreateTripPage = () => {
   }, []);
 
   return (
-    <div
-      ref={sectionRef}
-      id="create-trip"
-      className="w-[100vw] h-[100vh] bg-gray-50 flex flex-col"
-    >
-      <div className="flex flex-1">
-        <div className="min-w-1/4">
-          <TripForm />
-        </div>
-        <div className="p-10 flex-1 flex items-center justify-center relative">
-          <div
-            className="box-border p-6 aspect-[4/3] w-full max-w-[960px] flex items-center justify-center bg-black layered-shadow"
-            aria-label="Preview area with black frame"
-            tabIndex={0}
-            role="region"
-          >
-            <PreviewContainer />
+    <ProtectedRoute>
+      <div
+        ref={sectionRef}
+        id="create-trip"
+        className="w-[100vw] h-[100vh] bg-gray-50 flex flex-col"
+      >
+        <div className="flex flex-1">
+          <div className="min-w-1/4">
+            <TripForm />
+          </div>
+          <div className="p-10 flex-1 flex items-center justify-center relative">
+            <div
+              className="box-border p-6 aspect-[4/3] w-full max-w-[960px] flex items-center justify-center bg-black layered-shadow"
+              aria-label="Preview area with black frame"
+              tabIndex={0}
+              role="region"
+            >
+              <PreviewContainer />
+            </div>
           </div>
         </div>
-      </div>
-    </div >
+      </div >
+    </ProtectedRoute>
   );
 };
 

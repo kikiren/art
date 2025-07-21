@@ -17,6 +17,8 @@ import downloadMap from '@/components/forms/TripForm/downloadMap';
 import { Input } from '@/components/ui/input';
 import { RootState } from '@/store';
 import StopForm from '@/components/forms/TripForm/StopForm';
+import { useTrip } from '@/hooks/useTrip';
+import { useRouter } from 'next/navigation';
 
 
 export const TripForm: React.FC = () => {
@@ -26,6 +28,10 @@ export const TripForm: React.FC = () => {
 
   const stops = useSelector((state: RootState) => state.newTrip.stops);
 
+  const tripData = useSelector((state: RootState) => state.newTrip);
+  const user = useSelector((state: RootState) => state.auth!.user);
+  const { saveTrip } = useTrip();
+  const router = useRouter();
   return (
     <Card className="h-full" id="newTripForm">
       <CardHeader>
@@ -58,8 +64,13 @@ export const TripForm: React.FC = () => {
           }
         }}>Re-start</Button>
         <Button onClick={downloadMap}>Preview</Button>
+        <Button onClick={downloadMap}>Download</Button>
+        <Button onClick={() => {
+          saveTrip(tripData, user!.uid)
+          router.push('/trips');
+        }}>Save</Button>
       </CardFooter>
-    </Card>
+    </Card >
   );
 };
 

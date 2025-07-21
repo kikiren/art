@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import UserProfile from './UserProfile';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,12 +32,6 @@ export default function Navbar() {
               Home
             </Link>
             <Link
-              href="/trips"
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-            >
-              My Trips
-            </Link>
-            <Link
               href="/create"
               className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
             >
@@ -52,9 +47,7 @@ export default function Navbar() {
 
           {/* User Menu */}
           <div className="hidden md:flex items-center space-x-4">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
-              Sign In
-            </button>
+            <UserProfile />
           </div>
 
           {/* Mobile menu button */}
@@ -109,12 +102,6 @@ export default function Navbar() {
               Home
             </Link>
             <Link
-              href="/trips"
-              className="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium"
-            >
-              My Trips
-            </Link>
-            <Link
               href="/create"
               className="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium"
             >
@@ -126,10 +113,26 @@ export default function Navbar() {
             >
               About
             </Link>
+            <Link
+              href="/test-protected"
+              className="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium"
+            >
+              Test Protected
+            </Link>
+            <Link
+              href="/test-db"
+              className="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium"
+            >
+              Test DB
+            </Link>
+            <Link
+              href="/test-user-slice"
+              className="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium"
+            >
+              Test User Slice
+            </Link>
             <div className="pt-4 pb-3 border-t border-gray-200">
-              <button className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
-                Sign In
-              </button>
+              <UserProfile />
             </div>
           </div>
         </div>
