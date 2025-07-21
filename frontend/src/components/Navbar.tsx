@@ -4,11 +4,27 @@ import Link from 'next/link';
 import { useState } from 'react';
 import UserProfile from './UserProfile';
 
+
+const navItems = [
+  {
+    label: 'Home',
+    href: '/'
+  },
+  {
+    label: 'Create Trip',
+    href: '/create'
+  },
+  {
+    label: 'About',
+    href: '/about'
+  },
+]
+
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-white shadow-lg border-b border-gray-200">
+    <nav className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo */}
@@ -22,27 +38,18 @@ export default function Navbar() {
               </span>
             </Link>
           </div>
-
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link
-              href="/"
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-            >
-              Home
-            </Link>
-            <Link
-              href="/create"
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-            >
-              Create Trip
-            </Link>
-            <Link
-              href="/about"
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-            >
-              About
-            </Link>
+            {
+              navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                  {item.label}
+                </Link>
+              ))
+            }
           </div>
 
           {/* User Menu */}
@@ -95,45 +102,17 @@ export default function Navbar() {
       {isMenuOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
-            <Link
-              href="/"
-              className="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium"
-            >
-              Home
-            </Link>
-            <Link
-              href="/create"
-              className="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium"
-            >
-              Create Trip
-            </Link>
-            <Link
-              href="/about"
-              className="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium"
-            >
-              About
-            </Link>
-            <Link
-              href="/test-protected"
-              className="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium"
-            >
-              Test Protected
-            </Link>
-            <Link
-              href="/test-db"
-              className="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium"
-            >
-              Test DB
-            </Link>
-            <Link
-              href="/test-user-slice"
-              className="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium"
-            >
-              Test User Slice
-            </Link>
-            <div className="pt-4 pb-3 border-t border-gray-200">
-              <UserProfile />
-            </div>
+            {
+              navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium"
+                >
+                  {item.label}
+                </Link>
+              ))
+            }
           </div>
         </div>
       )}
